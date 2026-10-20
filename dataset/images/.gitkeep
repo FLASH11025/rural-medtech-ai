@@ -1,0 +1,2 @@
+# This directory contains chest X-ray images from the Indiana University dataset.
+# In production, download the dataset as described in docs/DATASET_AND_LABELS.md.

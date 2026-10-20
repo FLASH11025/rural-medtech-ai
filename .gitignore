@@ -1,0 +1,60 @@
+# Operating System Files
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.swp
+*.swo
+
+# Python / Virtual Environment
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# Node / Frontend
+node_modules/
+.next/
+out/
+.npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Environment Variables & Local Secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Log files & scratch files
+*.log
+backend/err.txt
+backend/out.txt
+backend/server_err.log
+backend/server_out.log
+backend/start_err.log
+backend/start_out.log
+backend/sys_err.log
+backend/sys_out.log
+frontend/dev_err.log
+frontend/dev_out.log
+
+# Raw ImageNet download cache (not needed in repo)
+backend/densenet121-a639ec97.pth
+
+# Medical Image Dataset (13.5 GB - too large for GitHub)
+# Keep the CSV metadata files and sample test image
+dataset/images/*
+!dataset/images/.gitkeep
+!dataset/images/1000_IM-0003-1001.dcm.png

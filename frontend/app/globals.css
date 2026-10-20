@@ -1,0 +1,219 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* === PRIMARY PALETTE: Deep Navy (Clinical Authority) === */
+  --color-primary: #1a3a5c;
+  --color-primary-light: #2d5986;
+  --color-primary-dark: #0d1f33;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #ddeeff;
+  --color-on-primary-container: #001d36;
+
+  /* === SECONDARY: Teal (Positive/Interactive) === */
+  --color-secondary: #0d7377;
+  --color-secondary-light: #14a0a5;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #ccf5f5;
+  --color-on-secondary-container: #002020;
+
+  /* === SURFACES === */
+  --color-background: #f0f4f8;
+  --color-surface: #ffffff;
+  --color-surface-low: #f8fafc;
+  --color-surface-container: #eef2f7;
+  --color-surface-high: #e4ecf4;
+  --color-surface-highest: #d8e4ee;
+
+  /* === ON-SURFACE TONES === */
+  --color-on-background: #0d1f33;
+  --color-on-surface: #1a2a3a;
+  --color-on-surface-muted: #4a5a6a;
+  --color-on-surface-subtle: #7a8a9a;
+
+  /* === BORDERS === */
+  --color-border: #c8d8e8;
+  --color-border-strong: #8aa0b8;
+
+  /* === STATUS COLORS === */
+  --color-success: #1a7a4a;
+  --color-success-light: #e6f5ed;
+  --color-warning: #7a5500;
+  --color-warning-light: #fff8e6;
+  --color-error: #9a1a1a;
+  --color-error-light: #fde8e8;
+  --color-info: #1a4a7a;
+  --color-info-light: #e6eef8;
+
+  /* === PNEUMONIA SPECIFIC === */
+  --color-pneumonia: #c0392b;
+  --color-pneumonia-bg: #fdf0ee;
+  --color-normal: #1a7a4a;
+  --color-normal-bg: #e6f5ed;
+  --color-uncertain: #7a5500;
+  --color-uncertain-bg: #fff8e6;
+
+  /* === TYPOGRAPHY === */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "ui-monospace", "SFMono-Regular", monospace;
+
+  /* === RADII === */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+}
+
+/* ============================================
+   BASE
+   ============================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-on-surface);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100dvh;
+}
+
+/* ============================================
+   CLINICAL CARD
+   ============================================ */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 1px 4px rgba(26, 58, 92, 0.06);
+}
+
+/* ============================================
+   CONFIDENCE BAR
+   ============================================ */
+.confidence-bar-pneumonia {
+  box-shadow: 0 0 8px rgba(192, 57, 43, 0.35);
+}
+
+.confidence-bar-normal {
+  box-shadow: 0 0 8px rgba(26, 122, 74, 0.35);
+}
+
+/* ============================================
+   HEATMAP LEGEND GRADIENT
+   ============================================ */
+.heatmap-legend {
+  background: linear-gradient(to right, #00008b, #0000ff, #00ffff, #ffff00, #ff0000);
+  height: 8px;
+  border-radius: 4px;
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  body {
+    background: white;
+    font-size: 12pt;
+  }
+  .card {
+    box-shadow: none;
+    border: 1px solid #ccc;
+    break-inside: avoid;
+  }
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================
+   DRAG-AND-DROP UPLOAD ZONE
+   ============================================ */
+.upload-zone {
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-xl);
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  background: var(--color-surface-low);
+}
+
+.upload-zone:hover,
+.upload-zone.drag-over {
+  border-color: var(--color-secondary);
+  background: var(--color-secondary-container);
+}
+
+/* ============================================
+   FOCUS STYLES (Accessibility)
+   ============================================ */
+:focus-visible {
+  outline: 2px solid var(--color-secondary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ============================================
+   SKELETON LOADER
+   ============================================ */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-container) 25%,
+    var(--color-surface-high) 50%,
+    var(--color-surface-container) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ============================================
+   PROCESSING STEPS
+   ============================================ */
+.step-active {
+  color: var(--color-secondary);
+}
+
+.step-done {
+  color: var(--color-success);
+}
+
+.step-pending {
+  color: var(--color-on-surface-subtle);
+}
+
+/* ============================================
+   SCROLLBAR (subtle)
+   ============================================ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-surface-container);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border-radius: 3px;
+}

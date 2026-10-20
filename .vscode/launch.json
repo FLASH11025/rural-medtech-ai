@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch Frontend",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm.cmd run dev",
+      "cwd": "${workspaceFolder}/frontend"
+    },
+    {
+      "name": "Launch Backend",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/backend/main.py",
+      "console": "integratedTerminal",
+      "args": [],
+      "cwd": "${workspaceFolder}/backend",
+      "justMyCode": true
+    }
+  ]
+}

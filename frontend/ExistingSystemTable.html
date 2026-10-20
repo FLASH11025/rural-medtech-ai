@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Existing System - Research Comparison Table</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #e8e8e8; display: flex; justify-content: center; padding: 24px; font-family: 'Inter', Calibri, 'Segoe UI', Arial, sans-serif; }
+  .slide {
+    width: 1123px; /* A4 landscape ~ 960-1123px fits 16:9 slide */
+    background: #fff;
+    padding: 18px 20px 14px 20px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  }
+  .slide-title {
+    font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #111; text-align: center; margin-bottom: 2px;
+  }
+  .slide-subtitle {
+    font-size: 8.5px; font-weight: 400; color: #666; text-align: center; margin-bottom: 12px; letter-spacing: 0.02em;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    border: 1px solid #222;
+  }
+  /* Column widths: Paper widest, Year narrowest */
+  col.col-paper { width: 26%; }
+  col.col-year { width: 7.5%; }
+  col.col-authors { width: 14.5%; }
+  col.col-adv { width: 17.5%; }
+  col.col-lim { width: 17.5%; }
+  col.col-feat { width: 17%; }
+
+  thead th {
+    background: #0f0f0f;
+    color: #ffffff;
+    font-size: 7.8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 8px 6px;
+    text-align: center;
+    vertical-align: middle;
+    border: 0.7px solid #222;
+    line-height: 1.3;
+    white-space: normal;
+  }
+  thead th:first-child { text-align: left; padding-left: 8px; }
+  tbody td {
+    font-size: 7.35px;
+    line-height: 1.38;
+    padding: 6px 6px;
+    vertical-align: top;
+    border: 0.6px solid #c8c8c8;
+    color: #1a1a1a;
+    word-wrap: break-word;
+    white-space: normal;
+    font-weight: 400;
+  }
+  tbody tr:nth-child(even) td { background: #f2f2f4; }
+  tbody tr:nth-child(odd) td { background: #ffffff; }
+  /* Paper title italic */
+  td.paper { font-style: italic; font-weight: 600; color: #111; text-align: left; }
+  td.paper span.venue { display: block; font-style: normal; font-weight: 400; font-size: 6.7px; color: #555; margin-top: 2px; line-height: 1.3; }
+  td.year { text-align: center; font-weight: 600; font-size: 7.8px; }
+  td.authors { font-size: 7.0px; color: #222; line-height: 1.35; }
+  td.adv, td.lim, td.feat { font-size: 7.15px; }
+  td.adv { color: #1a3a1a; }
+  td.lim { color: #4a1a1a; }
+  td.feat { color: #0f2a44; font-weight: 500; }
+  /* bullet inside cells */
+  td ul { margin: 0; padding-left: 10px; list-style: disc; }
+  td ul li { margin-bottom: 1.5px; }
+  td ul li:last-child { margin-bottom: 0; }
+  .footer {
+    margin-top: 7px;
+    font-size: 6.3px; color: #888; text-align: right; font-style: italic; letter-spacing: 0.02em;
+  }
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="slide-title">Existing System &mdash; Research Comparison</div>
+  <div class="slide-subtitle">DenseNet-121 &bull; CLAHE Preprocessing &bull; Grad-CAM XAI &bull; Rural Triage Deployment</div>
+
+  <table>
+    <colgroup>
+      <col class="col-paper">
+      <col class="col-year">
+      <col class="col-authors">
+      <col class="col-adv">
+      <col class="col-lim">
+      <col class="col-feat">
+    </colgroup>
+    <thead>
+      <tr>
+        <th>Research Paper</th>
+        <th>Year of Publish</th>
+        <th>Authors</th>
+        <th>Advantages</th>
+        <th>Limitations</th>
+        <th>Features to Adopt</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Row 1 -->
+      <tr>
+        <td class="paper">DenseNet121-Enabled Deep Transfer Learning Pipeline for Pneumonia Classification in Chest Radiographic Modalities
+          <span class="venue">IEEE ICOICI 2025 &bull; doi:10.1109/icoici65217.2025.11254031</span>
+        </td>
+        <td class="year">2025</td>
+        <td class="authors">X. A. Presskila, V. Sasikala, R. S. Krishnan, S. Senthilkumar, J. R. F. Raj, A. Sangeetha</td>
+        <td class="adv"><ul><li>Transfer learning reduces need for large labeled data; robust across clinical conditions</li><li>Interpretable outputs build clinical trust</li><li>Designed for low-resource settings</li></ul></td>
+        <td class="lim"><ul><li>No per-image CLAHE tuning; fixed preprocessing</li><li>Limited edge-CPU latency evaluation</li><li>Single-dataset validation</li></ul></td>
+        <td class="feat"><ul><li>Adopt ImageNet-pretrained DenseNet121 + fine-tuned classifier head (1024&rarr;2)</li><li>Retain rapid triage scoring logic for urgent referral</li></ul></td>
+      </tr>
+      <!-- Row 2 -->
+      <tr>
+        <td class="paper">Pneumonia Detection and Classification from Chest X-Ray Images Using Modified DenseNet121 Deep Learning Approach
+          <span class="venue">IEEE ICAIHC 2025 &bull; doi:10.1109/icaihc64101.2025.10956683</span>
+        </td>
+        <td class="year">2025</td>
+        <td class="authors">Manoj Kumar Dalei, Saswati Mahapatra</td>
+        <td class="adv"><ul><li>Modified head + augmentation &rarr; 90.06% acc, Sens 0.89 Spec 0.90</li><li>Effective on small dataset; good generalization</li></ul></td>
+        <td class="lim"><ul><li>No XAI/heat-map for clinician verification</li><li>No CPU/edge profiling or PII handling</li></ul></td>
+        <td class="feat"><ul><li>Adopt augmentation (rotation/flip/zoom) &amp; binary head redesign</li><li>Use as accuracy baseline vs. your Grad-CAM pipeline</li></ul></td>
+      </tr>
+      <!-- Row 3 -->
+      <tr>
+        <td class="paper">Classification of Paediatric Pneumonia Using Modified DenseNet-121 Deep-Learning Model
+          <span class="venue">IEEE Access 2024 &bull; doi:10.1109/access.2024.3371151 &bull; Guangzhou 5856 images</span>
+        </td>
+        <td class="year">2024</td>
+        <td class="authors">T. S. Arulananth, S. W. Prakash, R. K. Ayyasamy, V. Kavitha, P. Kuppusamy, P. Chinnasamy</td>
+        <td class="adv"><ul><li>BN + MaxPool + Dropout &rarr; <b>97.03% acc, AUC 96.34</b> beats ResNet50/VGG16/MobileNetV2</li><li>Proven on paediatric 1-5 yrs cohort</li></ul></td>
+        <td class="lim"><ul><li>Paediatric-only; adult generalization unclear</li><li>No localization explainability</li><li>Higher depth not tested on edge CPU</li></ul></td>
+        <td class="feat"><ul><li>Adopt BN/Dropout regularization for stability</li><li>Reuse 5856-image evaluation protocol for comparison</li></ul></td>
+      </tr>
+      <!-- Row 4 -->
+      <tr>
+        <td class="paper">Binary Classification of Pneumonia in Chest X-Ray Images Using Modified CLAHE Algorithm
+          <span class="venue">Sensors (MDPI) 2025 &bull; doi:10.3390/s1424-8220/25/13/3976</span>
+        </td>
+        <td class="year">2025</td>
+        <td class="authors">A. S. Buriboev, A. Abduvaitov, H. S. Jeon (Gachon / Konkuk Univ.)</td>
+        <td class="adv"><ul><li>Adaptive tile [2-24] + BRISQUE optimization: 98.7% acc, Prec 99.3% Rec 98.6%</li><li>Vs HE 86.4% / std CLAHE 93.5%; BRISQUE 34.4&rarr;24.7, -15% noise</li></ul></td>
+        <td class="lim"><ul><li>Single dataset (ChestX-ray14); CheXpert/NIH not validated</li><li>Per-image optimization adds latency for CPU edge</li></ul></td>
+        <td class="feat"><ul><li>Adopt variance-guided CLAHE (your clipLimit 2.0, 8&times;8) + consider BRISQUE-tuned adaptive variant</li><li>Reuse as preprocessing justification in SRS FR-1</li></ul></td>
+      </tr>
+      <!-- Row 5 -->
+      <tr>
+        <td class="paper">Weakly Supervised Pneumonia Localization Using Deep Neural Network and Grad-CAM Explanations
+          <span class="venue">arXiv:2511.00456v5 &bull; 2025 &bull; 7 backbones benchmark</span>
+        </td>
+        <td class="year">2025</td>
+        <td class="authors">Multi-institution benchmark (ResNet, DenseNet121, EfficientNet, MobileNetV3, ViT-B16)</td>
+        <td class="adv"><ul><li>Image-level labels only &rarr; 96-98% acc; ResNet18/EfficientNet-B0 98% F1 0.987</li><li>Proposes Lung Attention Ratio (LAR) to quantify Grad-CAM quality</li></ul></td>
+        <td class="lim"><ul><li>DenseNet121 mildly overfits vs compact models</li><li>No clinical latency / offline deployment test</li></ul></td>
+        <td class="feat"><ul><li>Adopt Grad-CAM on denseblock4.denselayer16.conv2 (your hook) + LAR metric</li><li>Keep MobileNetV3 as lightweight fallback for 4GB CPU</li></ul></td>
+      </tr>
+      <!-- Row 6 -->
+      <tr>
+        <td class="paper">Explainable Artificial Intelligence Model for Pneumonia Detection: Hybrid CNN-ViT and Grad-CAM
+          <span class="venue">J. Nat. Sci. Eng. Tech. (JNTETI) 2025 &bull; doi:10.22146/jnteti.v14i4.19822</span>
+        </td>
+        <td class="year">2025</td>
+        <td class="authors">Atika Hendryani, Vita Nurdinawati, Agus Komarudin</td>
+        <td class="adv"><ul><li>Hybrid CNN (local) + ViT (global) = 96.5% acc / Prec 96% Rec 96% F1 94%</li><li>Grad-CAM heatmaps validate on healthy vs pneumonia; targeted for remote areas</li></ul></td>
+        <td class="lim"><ul><li>ViT is compute-heavy for offline rural edge; needs GPU</li><li>No DICOM PII stripping or FastAPI integration shown</li></ul></td>
+        <td class="feat"><ul><li>Adopt Grad-CAM overlay alpha-blending (0.6 anatomy + 0.4 heatmap) for rural workers</li><li>Adopt XAI transparency narrative for clinical trust (SRS Sec 3)</li></ul></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="footer">Existing System — 6-paper comparison &bull; widest: Research Paper &bull; narrowest: Year &bull; IEEE-style compact typography</div>
+</div>
+</body>
+</html>
