@@ -1,11 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
+const dmSans = localFont({
+  src: "./fonts/dm-sans-latin-wght-normal.woff2",
+  weight: "100 1000",
+  style: "normal",
   display: "swap",
+  variable: "--font-dm-sans",
+  fallback: ["ui-sans-serif", "system-ui", "sans-serif"],
 });
 
 export const metadata: Metadata = {
@@ -16,7 +19,7 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
+    statusBarStyle: "black-translucent",
     title: "MedTech AI",
   },
 };
@@ -24,7 +27,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#1a3a5c",
+  themeColor: "#050505",
 };
 
 export default function RootLayout({
@@ -33,16 +36,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={inter.variable}>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="en" className={dmSans.variable}>
+      <body>
+        <div className="app-window">{children}</div>
+      </body>
     </html>
   );
 }

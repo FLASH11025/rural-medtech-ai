@@ -1,8 +1,29 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
-import { fetchHospitals } from "../../lib/api";
+import { useState, useEffect, useCallback, useRef } from "react";
+import Link from "next/link";
+import {
+  Building,
+  CircleAlert,
+  Hospital as HospitalIcon,
+  LocateFixed,
+  MapPin,
+  Navigation,
+  Phone,
+  Search,
+  X,
+} from "lucide-react";
+import { fetchHospitals, healthCheck } from "../../lib/api";
 import type { Hospital } from "../../lib/types";
-import { BottomNav, TopBar } from "../components/ui";
+import {
+  BottomNav,
+  DisclaimerBanner,
+  DemoDataTag,
+  EngineOfflineBanner,
+  IconButton,
+  PillButton,
+  Skeleton,
+  TopBar,
+} from "../components/ui";
 
 const DISTRICTS = [
   "All Districts",
@@ -16,11 +37,11 @@ const DISTRICTS = [
   "Warangal",
 ];
 
-const TYPE_COLORS: Record<string, string> = {
-  Government: "bg-[var(--color-info-light)] text-[var(--color-info)] border-[var(--color-info)]",
-  Private: "bg-[var(--color-primary-container)] text-[var(--color-primary)] border-[var(--color-primary)]",
-  PHC: "bg-[var(--color-success-light)] text-[var(--color-success)] border-[var(--color-success)]",
-  CHC: "bg-[var(--color-secondary-container)] text-[var(--color-secondary)] border-[var(--color-secondary)]",
+const TYPE_TINT: Record<string, string> = {
+  Government: "chip-violet",
+  Private: "chip-ink",
+  PHC: "chip-lime",
+  CHC: "chip-uncertain",
 };
 
 function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
@@ -29,74 +50,77 @@ function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): nu
   const dLon = ((lon2 - lon1) * Math.PI) / 180;
   const a =
     Math.sin(dLat / 2) ** 2 +
-    Math.cos((lat1 * Math.PI) / 180) *
-      Math.cos((lat2 * Math.PI) / 180) *
-      Math.sin(dLon / 2) ** 2;
+    Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLon / 2) ** 2;
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-function HospitalCard({ hospital, userLat, userLon }: {
-  hospital: Hospital;
-  userLat?: number;
-  userLon?: number;
-}) {
-  const distance =
-    userLat && userLon && hospital.lat && hospital.lon
-      ? haversineKm(userLat, userLon, hospital.lat, hospital.lon)
-      : null;
+function directionsUrl(h: Hospital): string {
+  if (h.lat && h.lon) {
+    return `https://www.google.com/maps/search/?api=1&query=${h.lat},${h.lon}`;
+  }
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${h.name}, ${h.address}`)}`;
+}
 
-  const typeColor = TYPE_COLORS[hospital.type] || TYPE_COLORS.Government;
+function HospitalCard({ hospital: h, userLat, userLon }: { hospital: Hospital; userLat?: number; userLon?: number }) {
+  const distance =
+    userLat && userLon && h.lat && h.lon ? haversineKm(userLat, userLon, h.lat, h.lon) : null;
 
   return (
-    <article className="card p-4 space-y-3">
-      <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0">
-          <h3 className="font-semibold text-[var(--color-on-surface)] text-sm leading-snug">{hospital.name}</h3>
-          <p className="text-xs text-[var(--color-on-surface-subtle)] mt-0.5">{hospital.address}</p>
+    <article className="card flex flex-col gap-3.5 p-5">
+      <div className="flex items-start justify-between gap-3">
+        <div className="grid h-10 w-10 flex-shrink-0 place-items-center rounded-2xl border border-white/8" style={{ background: "rgba(124,58,237,0.14)" }}>
+          <HospitalIcon size={18} style={{ color: "var(--violetlight)" }} aria-hidden="true" />
         </div>
-        <div className="flex-shrink-0 flex flex-col items-end gap-1">
-          <span className={`text-[10px] font-semibold border px-2 py-0.5 rounded-full ${typeColor}`}>
-            {hospital.type}
-          </span>
-          {distance !== null && (
-            <span className="text-[10px] text-[var(--color-on-surface-subtle)] font-mono">
-              {distance < 1 ? `${(distance * 1000).toFixed(0)} m` : `${distance.toFixed(1)} km`}
-            </span>
-          )}
-        </div>
+        <span className={`chip ${TYPE_TINT[h.type] ?? "chip-ink"}`}>{h.type}</span>
       </div>
 
-      {/* Services */}
+      <div className="min-w-0">
+        <h3 className="truncate text-sm font-semibold text-white">{h.name}</h3>
+        <p className="mt-1 flex items-start gap-1.5 text-xs leading-snug text-ink2">
+          <MapPin size={13} className="mt-0.5 flex-shrink-0" aria-hidden="true" />
+          <span>
+            {h.address}, {h.district}
+          </span>
+        </p>
+      </div>
+
       <div className="flex flex-wrap gap-1.5">
-        {hospital.has_xray && (
-          <span className="text-[10px] bg-[var(--color-surface-container)] px-2 py-0.5 rounded-full border border-[var(--color-border)] flex items-center gap-1">
-            <span className="material-symbols-outlined text-[12px]" aria-hidden="true">radiology</span> X-Ray
+        {distance !== null && (
+          <span className="chip chip-lime">
+            {distance < 1 ? `${(distance * 1000).toFixed(0)} m` : `${distance.toFixed(1)} km`}
           </span>
         )}
-        {hospital.has_ct && (
-          <span className="text-[10px] bg-[var(--color-surface-container)] px-2 py-0.5 rounded-full border border-[var(--color-border)] flex items-center gap-1">
-            <span className="material-symbols-outlined text-[12px]" aria-hidden="true">scanner</span> CT Scan
-          </span>
-        )}
-        {hospital.departments.slice(0, 3).map((d) => (
-          <span key={d} className="text-[10px] bg-[var(--color-surface-container)] px-2 py-0.5 rounded-full border border-[var(--color-border)]">
+        {h.has_xray && <span className="chip chip-violet">X-Ray</span>}
+        {h.has_ct && <span className="chip chip-violet">CT</span>}
+        {h.departments.slice(0, 3).map((d) => (
+          <span key={d} className="chip chip-ink">
             {d}
           </span>
         ))}
       </div>
 
-      {/* Contact */}
-      {hospital.contact && (
-        <div className="flex items-center gap-2 text-xs text-[var(--color-on-surface-muted)]">
-          <span className="material-symbols-outlined text-[14px]" aria-hidden="true">call</span>
-          <a href={`tel:${hospital.contact}`} className="hover:underline">{hospital.contact}</a>
-        </div>
-      )}
+      <div className="mt-auto flex items-center gap-2">
+        {h.contact && (
+          <a href={`tel:${h.contact}`} className="btn btn-white !h-10 !px-4 !text-xs" aria-label={`Call ${h.name}`}>
+            <Phone size={14} aria-hidden="true" />
+            Call
+          </a>
+        )}
+        <a
+          href={directionsUrl(h)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn btn-dark !h-10 !px-4 !text-xs"
+          aria-label={`Get directions to ${h.name}`}
+        >
+          <Navigation size={14} aria-hidden="true" />
+          Directions
+        </a>
+      </div>
 
-      {/* Demo label */}
-      {hospital.is_demo && (
-        <p className="text-[9px] text-[var(--color-on-surface-subtle)] italic border-t border-[var(--color-border)] pt-2">
-          ⚠ Demonstration record — verify before use. Last updated: {hospital.last_verified}
+      {h.is_demo && (
+        <p className="border-t border-white/5 pt-3">
+          <DemoDataTag lastVerified={h.last_verified} />
         </p>
       )}
     </article>
@@ -107,12 +131,18 @@ export default function HospitalsPage() {
   const [hospitals, setHospitals] = useState<Hospital[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [offline, setOffline] = useState<boolean | null>(null);
   const [search, setSearch] = useState("");
   const [district, setDistrict] = useState("All Districts");
   const [filterXray, setFilterXray] = useState(false);
   const [userLat, setUserLat] = useState<number | undefined>();
   const [userLon, setUserLon] = useState<number | undefined>();
-  const [locationStatus, setLocationStatus] = useState<"idle" | "requesting" | "granted" | "denied">("idle");
+  const [locating, setLocating] = useState(false);
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    healthCheck().then(setOffline);
+  }, []);
 
   const loadHospitals = useCallback(async () => {
     setLoading(true);
@@ -136,18 +166,15 @@ export default function HospitalsPage() {
   }, [loadHospitals]);
 
   const requestLocation = () => {
-    if (!navigator.geolocation) {
-      setLocationStatus("denied");
-      return;
-    }
-    setLocationStatus("requesting");
+    if (!navigator.geolocation) return;
+    setLocating(true);
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         setUserLat(pos.coords.latitude);
         setUserLon(pos.coords.longitude);
-        setLocationStatus("granted");
+        setLocating(false);
       },
-      () => setLocationStatus("denied")
+      () => setLocating(false)
     );
   };
 
@@ -155,131 +182,145 @@ export default function HospitalsPage() {
     .filter((h) => (filterXray ? h.has_xray : true))
     .sort((a, b) => {
       if (userLat && userLon && a.lat && b.lat && a.lon && b.lon) {
-        return (
-          haversineKm(userLat, userLon, a.lat, a.lon) -
-          haversineKm(userLat, userLon, b.lat, b.lon)
-        );
+        return haversineKm(userLat, userLon, a.lat, a.lon) - haversineKm(userLat, userLon, b.lat, b.lon);
       }
       return 0;
     });
 
+  const activeFilters = search.trim() !== "" || district !== "All Districts" || filterXray;
+
   return (
     <>
-      <TopBar title="Hospital Finder" subtitle="Nearby facilities with radiology" />
+      <TopBar />
 
-      <main className="max-w-lg mx-auto px-4 py-4 pb-24 space-y-4">
-        {/* Demo notice */}
-        <div className="bg-[var(--color-warning-light)] border border-[var(--color-warning)] rounded-lg p-3 flex gap-2">
-          <span className="material-symbols-outlined text-[var(--color-warning)] text-[16px] flex-shrink-0 mt-0.5">info</span>
-          <p className="text-xs text-[var(--color-warning)]">
-            Records shown are <strong>demonstration data</strong>. Verify all details independently before visiting any facility.
-          </p>
+      <main className="container-x pb-28 pt-6 md:pb-12">
+        <div className="mb-6">
+          <h1 className="text-[28px] font-medium leading-tight tracking-tight md:text-[40px]">
+            Nearby <span className="text-ink2">hospitals</span>
+          </h1>
+          <p className="mt-1 text-sm text-ink2">Demonstration records for AP &amp; Telangana — verify before visiting.</p>
         </div>
 
-        {/* Location */}
-        <div className="card p-3 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="material-symbols-outlined text-[var(--color-secondary)] text-[20px]" aria-hidden="true">my_location</span>
-            <div>
-              <p className="text-xs font-semibold text-[var(--color-on-surface)]">Distance sorting</p>
-              <p className="text-[10px] text-[var(--color-on-surface-subtle)]">
-                {locationStatus === "granted"
-                  ? "Location active — sorted by distance"
-                  : locationStatus === "denied"
-                  ? "Location denied — sorted alphabetically"
-                  : "Enable for distance-based sorting"}
-              </p>
-            </div>
+        {offline === false && (
+          <div className="mb-4">
+            <EngineOfflineBanner />
           </div>
-          {locationStatus !== "granted" && (
-            <button
-              onClick={requestLocation}
-              disabled={locationStatus === "requesting"}
-              className="flex-shrink-0 h-8 px-3 rounded-lg bg-[var(--color-secondary)] text-white text-xs font-semibold disabled:opacity-50"
-              aria-label="Enable location for distance sorting"
+        )}
+
+        {/* Controls */}
+        <div className="mb-5 flex flex-wrap items-center gap-2.5">
+          <div className="relative min-w-[220px] flex-1">
+            <Search size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-ink3" aria-hidden="true" />
+            <input
+              ref={searchRef}
+              type="search"
+              placeholder="Search hospitals…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="input-dark w-full pl-10 pr-4"
+              aria-label="Search hospitals"
+            />
+          </div>
+
+          <div className="relative">
+            <select
+              value={district}
+              onChange={(e) => setDistrict(e.target.value)}
+              className="input-dark appearance-none pr-9 pl-4"
+              aria-label="Filter by district"
             >
-              {locationStatus === "requesting" ? "…" : "Use Location"}
-            </button>
-          )}
-        </div>
+              {DISTRICTS.map((d) => (
+                <option key={d}>{d}</option>
+              ))}
+            </select>
+            <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-ink3" aria-hidden="true">
+              ▾
+            </span>
+          </div>
 
-        {/* Search */}
-        <div className="relative">
-          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-on-surface-subtle)] text-[20px]" aria-hidden="true">
-            search
-          </span>
-          <input
-            type="search"
-            placeholder="Search hospitals…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full h-11 pl-10 pr-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] text-sm focus:outline-none focus:border-[var(--color-secondary)] transition-colors"
-            aria-label="Search hospitals"
-          />
-        </div>
-
-        {/* Filters */}
-        <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-          <select
-            value={district}
-            onChange={(e) => setDistrict(e.target.value)}
-            className="h-9 px-3 rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] text-xs font-medium focus:outline-none focus:border-[var(--color-secondary)] flex-shrink-0"
-            aria-label="Filter by district"
-          >
-            {DISTRICTS.map((d) => <option key={d}>{d}</option>)}
-          </select>
           <button
             onClick={() => setFilterXray(!filterXray)}
-            className={`h-9 px-3 rounded-full border text-xs font-medium flex-shrink-0 transition-colors flex items-center gap-1 ${
-              filterXray
-                ? "bg-[var(--color-secondary)] text-white border-[var(--color-secondary)]"
-                : "bg-[var(--color-surface)] border-[var(--color-border)] text-[var(--color-on-surface-muted)]"
+            className={`btn !h-11 !px-4 text-xs ${
+              filterXray ? "!text-black" : "btn-dark"
             }`}
+            style={filterXray ? { background: "var(--violet)" } : undefined}
             aria-pressed={filterXray}
           >
-            <span className="material-symbols-outlined text-[14px]" aria-hidden="true">radiology</span>
-            X-Ray Only
+            {filterXray && <Building size={14} aria-hidden="true" />}
+            X-Ray only
           </button>
+
+          <IconButton
+            label="Use my location for distance sorting"
+            onClick={requestLocation}
+            className="!h-11 !w-11"
+            aria-busy={locating}
+          >
+            <LocateFixed size={17} style={userLat ? { color: "var(--lime)" } : undefined} aria-hidden="true" />
+          </IconButton>
         </div>
 
         {/* Results */}
         {loading ? (
-          <div className="space-y-3">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="card p-4 space-y-2">
-                <div className="skeleton h-4 w-3/4" />
-                <div className="skeleton h-3 w-1/2" />
-                <div className="flex gap-2">
-                  <div className="skeleton h-6 w-16 rounded-full" />
-                  <div className="skeleton h-6 w-20 rounded-full" />
+          <div className="stagger grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="card p-5">
+                <div className="mb-4 flex items-center justify-between">
+                  <Skeleton className="h-10 w-10 rounded-2xl" />
+                  <Skeleton className="h-6 w-20 rounded-full" />
+                </div>
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="mt-2 h-3 w-2/3" />
+                <div className="mt-4 flex gap-2">
+                  <Skeleton className="h-6 w-16 rounded-full" />
+                  <Skeleton className="h-6 w-20 rounded-full" />
+                  <Skeleton className="h-6 w-14 rounded-full" />
                 </div>
               </div>
             ))}
           </div>
         ) : error ? (
-          <div className="card p-6 text-center space-y-3">
-            <span className="material-symbols-outlined text-[36px] text-[var(--color-error)]" aria-hidden="true">cloud_off</span>
-            <p className="text-sm text-[var(--color-error)]">{error}</p>
-            <button onClick={loadHospitals} className="h-10 px-4 rounded-lg bg-[var(--color-primary)] text-white text-sm font-semibold">
+          <div className="card grid place-items-center gap-3 p-10 text-center" role="alert">
+            <CircleAlert size={28} style={{ color: "var(--rederr)" }} aria-hidden="true" />
+            <p className="text-sm text-ink2">{error}</p>
+            <PillButton variant="white" onClick={loadHospitals}>
               Retry
-            </button>
+            </PillButton>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="card p-8 text-center space-y-2">
-            <span className="material-symbols-outlined text-[40px] text-[var(--color-on-surface-subtle)]" aria-hidden="true">search_off</span>
-            <p className="text-sm font-semibold text-[var(--color-on-surface-muted)]">No hospitals found</p>
-            <p className="text-xs text-[var(--color-on-surface-subtle)]">
-              Try different search terms or remove filters
-            </p>
+          <div className="card grid place-items-center gap-3 p-10 text-center">
+            <Search size={28} className="text-ink3" aria-hidden="true" />
+            <p className="text-sm font-semibold text-white">No hospitals found</p>
+            <p className="text-xs text-ink3">Try different search terms or remove filters</p>
+            {activeFilters && (
+              <PillButton variant="ghost" onClick={() => { setSearch(""); setDistrict("All Districts"); setFilterXray(false); }}>
+                <X size={14} aria-hidden="true" />
+                Clear filters
+              </PillButton>
+            )}
           </div>
         ) : (
-          <div className="space-y-3">
-            <p className="text-xs text-[var(--color-on-surface-subtle)]">{filtered.length} hospitals found</p>
+          <div className="stagger grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <p className="col-span-full text-xs text-ink3">
+              {filtered.length} hospital{filtered.length !== 1 ? "s" : ""} found
+              {userLat ? " · sorted by distance from your location" : ""}
+            </p>
             {filtered.map((h) => (
               <HospitalCard key={h.id} hospital={h} userLat={userLat} userLon={userLon} />
             ))}
           </div>
         )}
+
+        <div className="mt-6">
+          <DisclaimerBanner />
+        </div>
+
+        <p className="mt-4 text-center text-[11px] text-ink3">
+          Looking for a specialist?{" "}
+          <Link href="/doctors" className="underline hover:text-white">
+            Find a doctor →
+          </Link>
+        </p>
       </main>
 
       <BottomNav />

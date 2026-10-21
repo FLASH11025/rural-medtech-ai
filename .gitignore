@@ -49,6 +49,7 @@ backend/sys_err.log
 backend/sys_out.log
 frontend/dev_err.log
 frontend/dev_out.log
+backend/debug_*.py
 
 # Raw ImageNet download cache (not needed in repo)
 backend/densenet121-a639ec97.pth

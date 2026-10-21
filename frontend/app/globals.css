@@ -1,219 +1,892 @@
 @import "tailwindcss";
 
-@theme inline {
-  /* === PRIMARY PALETTE: Deep Navy (Clinical Authority) === */
-  --color-primary: #1a3a5c;
-  --color-primary-light: #2d5986;
-  --color-primary-dark: #0d1f33;
-  --color-on-primary: #ffffff;
-  --color-primary-container: #ddeeff;
-  --color-on-primary-container: #001d36;
+/* ============================================================
+   RURAL MEDTECH AI — DARK PREMIUM DESIGN SYSTEM
+   Window #050505 · purple #7C3AED · lime #C6F432
+   ============================================ */
+@theme {
+  /* Surfaces */
+  --color-window: #050505;
+  --color-card: #121212;
+  --color-card2: #161616;
+  --color-raised: #1a1a1a;
+  --color-line: rgba(255, 255, 255, 0.06);
+  --color-line2: rgba(255, 255, 255, 0.12);
 
-  /* === SECONDARY: Teal (Positive/Interactive) === */
-  --color-secondary: #0d7377;
-  --color-secondary-light: #14a0a5;
-  --color-on-secondary: #ffffff;
-  --color-secondary-container: #ccf5f5;
-  --color-on-secondary-container: #002020;
+  /* Ink */
+  --color-ink: #ffffff;
+  --color-ink2: #8a8a93;
+  --color-ink3: #5d5d64;
 
-  /* === SURFACES === */
-  --color-background: #f0f4f8;
-  --color-surface: #ffffff;
-  --color-surface-low: #f8fafc;
-  --color-surface-container: #eef2f7;
-  --color-surface-high: #e4ecf4;
-  --color-surface-highest: #d8e4ee;
+  /* Brand */
+  --color-violet: #7c3aed;
+  --color-violetlight: #a78bfa;
+  --color-violetdark: #3b1f7a;
+  --color-lime: #c6f432;
 
-  /* === ON-SURFACE TONES === */
-  --color-on-background: #0d1f33;
-  --color-on-surface: #1a2a3a;
-  --color-on-surface-muted: #4a5a6a;
-  --color-on-surface-subtle: #7a8a9a;
+  /* Status */
+  --color-green: #4ade80;
+  --color-amber: #fbbf24;
+  --color-coral: #fb7185;
+  --color-rederr: #f87171;
+}
 
-  /* === BORDERS === */
-  --color-border: #c8d8e8;
-  --color-border-strong: #8aa0b8;
-
-  /* === STATUS COLORS === */
-  --color-success: #1a7a4a;
-  --color-success-light: #e6f5ed;
-  --color-warning: #7a5500;
-  --color-warning-light: #fff8e6;
-  --color-error: #9a1a1a;
-  --color-error-light: #fde8e8;
-  --color-info: #1a4a7a;
-  --color-info-light: #e6eef8;
-
-  /* === PNEUMONIA SPECIFIC === */
-  --color-pneumonia: #c0392b;
-  --color-pneumonia-bg: #fdf0ee;
-  --color-normal: #1a7a4a;
-  --color-normal-bg: #e6f5ed;
-  --color-uncertain: #7a5500;
-  --color-uncertain-bg: #fff8e6;
-
-  /* === TYPOGRAPHY === */
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "ui-monospace", "SFMono-Regular", monospace;
-
-  /* === RADII === */
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
+:root {
+  --line: rgba(255, 255, 255, 0.06);
+  --line2: rgba(255, 255, 255, 0.12);
+  --lime: #c6f432;
+  --violet: #7c3aed;
+  --violetlight: #a78bfa;
+  --coral: #fb7185;
+  --green: #4ade80;
+  --amber: #fbbf24;
+  --rederr: #f87171;
 }
 
 /* ============================================
-   BASE
+   BACKDROP: violet -> lime glow gradient field
    ============================================ */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(150deg, #2a1060 0%, #6d28d9 38%, #8b5cf6 68%, #a78bfa 100%);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(42rem 30rem at 88% -8%, rgba(217, 242, 122, 0.35), transparent 65%),
+    radial-gradient(28rem 22rem at 2% 112%, rgba(139, 92, 246, 0.5), transparent 60%),
+    radial-gradient(24rem 18rem at 55% 55%, rgba(13, 10, 25, 0.18), transparent 70%);
 }
 
 body {
-  background: var(--color-background);
-  color: var(--color-on-surface);
-  font-family: var(--font-sans);
+  color: #ffffff;
+  font-family: var(--font-dm-sans), "DM Sans", ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   min-height: 100dvh;
 }
 
 /* ============================================
-   CLINICAL CARD
+   FLOATING APP WINDOW
+   ============================================ */
+.app-window {
+  position: relative;
+  z-index: 1;
+  margin: 20px;
+  min-height: calc(100dvh - 40px);
+  background: var(--color-window);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 28px;
+  box-shadow: 0 48px 120px rgba(0, 0, 0, 0.55);
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 767px) {
+  .app-window {
+    margin: 0;
+    border-radius: 0;
+    border: none;
+    min-height: 100dvh;
+    box-shadow: none;
+  }
+}
+
+.container-x {
+  width: 100%;
+  max-width: 1128px;
+  margin-inline: auto;
+  padding-inline: 16px;
+}
+
+@media (min-width: 768px) {
+  .container-x {
+    padding-inline: 28px;
+  }
+}
+
+/* ============================================
+   CARDS
    ============================================ */
 .card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 1px 4px rgba(26, 58, 92, 0.06);
+  background: linear-gradient(180deg, #161616 0%, #121212 100%);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+}
+
+.card-flat {
+  background: #121212;
+  border: 1px solid var(--line);
+  border-radius: 24px;
 }
 
 /* ============================================
-   CONFIDENCE BAR
+   BUTTONS (pill, min 44px, press scale)
    ============================================ */
-.confidence-bar-pneumonia {
-  box-shadow: 0 0 8px rgba(192, 57, 43, 0.35);
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 2.75rem;
+  padding: 0 1.25rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: transform 0.15s ease, background-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+.btn:active {
+  transform: scale(0.97);
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
-.confidence-bar-normal {
-  box-shadow: 0 0 8px rgba(26, 122, 74, 0.35);
+.btn-white {
+  background: #ffffff;
+  color: #0a0a0a;
+}
+.btn-white:hover:not(:disabled) {
+  background: #ececec;
+}
+
+.btn-dark {
+  background: #1a1a1a;
+  color: #ffffff;
+  border: 1px solid var(--line2);
+}
+.btn-dark:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.btn-lime {
+  background: var(--lime);
+  color: #0a0a0a;
+  box-shadow: 0 0 28px rgba(198, 244, 50, 0.22);
+}
+.btn-lime:hover:not(:disabled) {
+  box-shadow: 0 0 36px rgba(198, 244, 50, 0.35);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-ink2, #8a8a93);
+  border: 1px solid var(--line2);
+}
+.btn-ghost:hover:not(:disabled) {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.icon-btn {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 9999px;
+  display: inline-grid;
+  place-items: center;
+  background: #161616;
+  border: 1px solid var(--line);
+  color: #8a8a93;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease, border-color 0.2s ease;
+}
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  border-color: var(--line2);
+}
+.icon-btn:active {
+  transform: scale(0.94);
 }
 
 /* ============================================
-   HEATMAP LEGEND GRADIENT
+   CHIPS & PILLS
+   ============================================ */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  height: 1.75rem;
+  padding: 0 0.75rem;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.chip-normal {
+  background: rgba(74, 222, 128, 0.12);
+  color: var(--green);
+  border: 1px solid rgba(74, 222, 128, 0.28);
+}
+.chip-pneumonia {
+  background: rgba(251, 113, 133, 0.12);
+  color: var(--coral);
+  border: 1px solid rgba(251, 113, 133, 0.3);
+}
+.chip-uncertain {
+  background: rgba(251, 191, 36, 0.12);
+  color: var(--amber);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+.chip-error {
+  background: rgba(248, 113, 113, 0.1);
+  color: var(--rederr);
+  border: 1px dashed rgba(248, 113, 113, 0.45);
+}
+.chip-violet {
+  background: rgba(124, 58, 237, 0.16);
+  color: var(--violetlight);
+  border: 1px solid rgba(124, 58, 237, 0.35);
+}
+.chip-lime {
+  background: rgba(198, 244, 50, 0.1);
+  color: var(--lime);
+  border: 1px solid rgba(198, 244, 50, 0.3);
+}
+.chip-ink {
+  background: rgba(255, 255, 255, 0.05);
+  color: #8a8a93;
+  border: 1px solid var(--line2);
+}
+
+.dot {
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 9999px;
+  flex-shrink: 0;
+}
+
+/* ============================================
+   INPUTS
+   ============================================ */
+.input-dark {
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  height: 2.75rem;
+  color: #ffffff;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+.input-dark:focus {
+  border-color: var(--violetlight);
+}
+.input-dark::placeholder {
+  color: #5d5d64;
+}
+
+/* ============================================
+   UPLOAD ZONE
+   ============================================ */
+.upload-zone {
+  position: relative;
+  border: 1.5px dashed rgba(139, 92, 246, 0.5);
+  border-radius: 28px;
+  background: linear-gradient(180deg, #131313, #0f0f0f);
+  transition: border-color 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+}
+.upload-zone:hover {
+  border-color: rgba(167, 139, 250, 0.75);
+}
+.upload-zone.drag-over {
+  border-color: rgba(198, 244, 50, 0.9);
+  border-style: solid;
+  box-shadow: 0 0 0 1px rgba(198, 244, 50, 0.25), 0 0 60px rgba(198, 244, 50, 0.07) inset;
+}
+
+.glow-orb {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+.glow-orb::before {
+  content: "";
+  width: 220px;
+  height: 220px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.5) 0%, rgba(124, 58, 237, 0) 70%);
+  filter: blur(28px);
+}
+
+/* ============================================
+   TOP BAR TABS + SLIDING PILL
+   ============================================ */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: rgba(5, 5, 5, 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
+  border-radius: 28px 28px 0 0;
+}
+@media (max-width: 767px) {
+  .topbar {
+    border-radius: 0;
+  }
+}
+
+.tab-track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 5px;
+  background: #1a1a1a;
+  border: 1px solid var(--line);
+  border-radius: 9999px;
+}
+.tab-item {
+  position: relative;
+  z-index: 10;
+  height: 2.25rem;
+  padding: 0 1.1rem;
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #8a8a93;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: color 0.25s ease;
+  white-space: nowrap;
+}
+.tab-item.active {
+  color: #0a0a0a;
+}
+.tab-indicator {
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  background: #ffffff;
+  border-radius: 9999px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+  transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1), width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   BOTTOM NAV (mobile floating pill)
+   ============================================ */
+.bottom-nav {
+  position: fixed;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 5px;
+  background: rgba(16, 16, 16, 0.88);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 9999px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+}
+
+/* ============================================
+   SEGMENTED CONTROL
+   ============================================ */
+.segmented {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  background: #141414;
+  border: 1px solid var(--line);
+  border-radius: 9999px;
+}
+.segmented-item {
+  position: relative;
+  z-index: 1;
+  height: 2rem;
+  padding: 0 0.9rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #8a8a93;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  white-space: nowrap;
+  transition: color 0.25s ease;
+}
+.segmented-item.active {
+  color: #0a0a0a;
+}
+.segmented-indicator {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  background: #ffffff;
+  border-radius: 9999px;
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   PROCESSING: SCANNING LINE
+   ============================================ */
+.scan-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  background: #000;
+}
+.scan-line {
+  position: absolute;
+  left: 3%;
+  right: 3%;
+  top: 0;
+  height: 2px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, transparent, rgba(167, 139, 250, 0.95), transparent);
+  box-shadow: 0 0 20px rgba(124, 58, 237, 0.85);
+  animation: scanY 2s linear infinite;
+}
+@keyframes scanY {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  8%,
+  92% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(var(--scan-h, 240px));
+    opacity: 0;
+  }
+}
+
+/* ============================================
+   STATUS BAR STRIPES (confidence)
+   ============================================ */
+.stripe-bar {
+  display: flex;
+  gap: 3px;
+  height: 0.75rem;
+}
+.stripe-bar > span {
+  flex: 1 1 0;
+  border-radius: 2px;
+  background: #3b1f7a;
+  transition: background-color 0.5s ease;
+}
+.stripe-bar > span.filled {
+  background: linear-gradient(180deg, #8b5cf6, #7c3aed);
+}
+
+/* ============================================
+   PROGRESS BAR
+   ============================================ */
+.bar-track {
+  height: 0.75rem;
+  border-radius: 9999px;
+  background: #1f1533;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #6d28d9, #a78bfa);
+  width: 0;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   HEATMAP LEGEND
    ============================================ */
 .heatmap-legend {
-  background: linear-gradient(to right, #00008b, #0000ff, #00ffff, #ffff00, #ff0000);
-  height: 8px;
-  border-radius: 4px;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #3b82f6, #22c55e, #facc15, #ef4444);
 }
 
 /* ============================================
-   PRINT STYLES
+   ANIMATIONS
    ============================================ */
-@media print {
-  .no-print {
-    display: none !important;
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-  .print-only {
-    display: block !important;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  body {
-    background: white;
-    font-size: 12pt;
+}
+.stagger > * {
+  opacity: 0;
+  animation: fadeUp 0.5s ease both;
+}
+.stagger > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger > *:nth-child(2) { animation-delay: 0.11s; }
+.stagger > *:nth-child(3) { animation-delay: 0.17s; }
+.stagger > *:nth-child(4) { animation-delay: 0.23s; }
+.stagger > *:nth-child(5) { animation-delay: 0.29s; }
+.stagger > *:nth-child(6) { animation-delay: 0.29s; }
+.stagger > *:nth-child(7) { animation-delay: 0.35s; }
+.stagger > *:nth-child(8) { animation-delay: 0.35s; }
+.stagger > *:nth-child(n + 9) { animation-delay: 0.4s; }
+
+@keyframes spinFade {
+  from { opacity: 0.35; }
+  to { opacity: 1; }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
-  .card {
-    box-shadow: none;
-    border: 1px solid #ccc;
-    break-inside: avoid;
+}
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+/* ============================================
+   SKELETON
+   ============================================ */
+.skeleton {
+  background: linear-gradient(90deg, #1a1a1a 25%, #242424 50%, #1a1a1a 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 12px;
+}
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
   }
 }
 
 /* ============================================
-   REDUCED MOTION
+   FOCUS, MOTION, MISC
    ============================================ */
+:focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: 2px;
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #2c2c31;
+  border-radius: 3px;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .scan-line {
+    display: none;
+  }
+  .stagger > * {
+    animation: none;
+    opacity: 1;
+  }
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+  .fade-up {
+    animation-delay: 0ms !important;
+    opacity: 1;
+  }
+  .fade-up,
+  .cross-fade {
+    animation: none !important;
+  }
 }
 
 /* ============================================
-   DRAG-AND-DROP UPLOAD ZONE
+   PRINT: clean white clinical report
    ============================================ */
-.upload-zone {
-  border: 2px dashed var(--color-border);
-  border-radius: var(--radius-xl);
-  transition: border-color 0.2s ease, background-color 0.2s ease;
-  background: var(--color-surface-low);
-}
-
-.upload-zone:hover,
-.upload-zone.drag-over {
-  border-color: var(--color-secondary);
-  background: var(--color-secondary-container);
+@media print {
+  body {
+    background: #ffffff !important;
+  }
+  body::before {
+    display: none;
+  }
+  .app-window {
+    background: #ffffff !important;
+    border: none;
+    border-radius: 0;
+    margin: 0;
+    box-shadow: none;
+    min-height: auto;
+  }
+  .app-window * {
+    color: #18181b !important;
+    border-color: #e4e4e7 !important;
+  }
+  .topbar,
+  .bottom-nav,
+  .no-print {
+    display: none !important;
+  }
+  .card {
+    background: #ffffff !important;
+    box-shadow: none;
+    border: 1px solid #d4d4d8 !important;
+    break-inside: avoid;
+  }
+  .chip-normal {
+    background: #dcfce7 !important;
+    color: #166534 !important;
+    border-color: #86efac !important;
+  }
+  .chip-pneumonia {
+    background: #fee2e2 !important;
+    color: #b91c1c !important;
+    border-color: #fca5a5 !important;
+  }
+  .chip-uncertain {
+    background: #fef3c7 !important;
+    color: #92400e !important;
+    border-color: #fcd34d !important;
+  }
+  .chip-error {
+    background: #fee2e2 !important;
+    color: #b91c1c !important;
+  }
+  .bar-fill {
+    background: #7c3aed !important;
+  }
+  .stripe-bar > span.filled {
+    background: #7c3aed !important;
+  }
+  body,
+  .app-window {
+    font-size: 12pt;
+  }
 }
 
 /* ============================================
-   FOCUS STYLES (Accessibility)
+   DASHBOARD
    ============================================ */
-:focus-visible {
-  outline: 2px solid var(--color-secondary);
-  outline-offset: 2px;
-  border-radius: 2px;
+
+/* Entrance animations */
+@keyframes dbFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.fade-up {
+  opacity: 0;
+  animation: dbFadeUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+@keyframes dbCrossFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.cross-fade {
+  animation: dbCrossFade 0.2s ease both;
 }
 
-/* ============================================
-   SKELETON LOADER
-   ============================================ */
-.skeleton {
-  background: linear-gradient(
-    90deg,
-    var(--color-surface-container) 25%,
-    var(--color-surface-high) 50%,
-    var(--color-surface-container) 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: var(--radius-sm);
+/* Press feedback on interactive cards/buttons */
+.pressable {
+  transition: transform 0.12s ease;
+}
+.pressable:active {
+  transform: scale(0.97);
 }
 
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+/* Editable clinic name */
+.clinic-edit {
+  border: none;
+  background: transparent;
+  color: var(--ink2);
+  font: inherit;
+  font-weight: 500;
+  outline: none;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.25);
+  width: 9ch;
+  padding: 0;
+}
+.clinic-edit:focus-visible {
+  border-bottom-color: var(--lime);
 }
 
-/* ============================================
-   PROCESSING STEPS
-   ============================================ */
-.step-active {
-  color: var(--color-secondary);
+/* Overview segment bars (Loud-style three-column stat strip) */
+.seg-strip {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 768px) {
+  .seg-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.seg-cell {
+  padding: 18px 20px;
+  min-width: 0;
+}
+.seg-cell + .seg-cell {
+  border-left: 1px solid var(--line);
 }
 
-.step-done {
-  color: var(--color-success);
+/* Striped share bar */
+.stripe-row {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 34px;
+  position: relative;
 }
-
-.step-pending {
-  color: var(--color-on-surface-subtle);
-}
-
-/* ============================================
-   SCROLLBAR (subtle)
-   ============================================ */
-::-webkit-scrollbar {
+.stripe-row .stripe {
   width: 6px;
-  height: 6px;
+  height: 100%;
+  border-radius: 9999px;
+  transform: scaleY(0);
+  transform-origin: center bottom;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #3b1f7a;
 }
-::-webkit-scrollbar-track {
-  background: var(--color-surface-container);
+.stripe-row .stripe.filled-violet {
+  background: #7c3aed;
 }
-::-webkit-scrollbar-thumb {
-  background: var(--color-border-strong);
-  border-radius: 3px;
+.stripe-row .stripe.filled-dim {
+  background: #5b34b0;
+}
+.stripe-row .stripe.on {
+  transform: scaleY(1);
+}
+.solid-bar {
+  height: 10px;
+  border-radius: 9999px;
+  background: #3b1f7a;
+  overflow: hidden;
+}
+.solid-bar > span {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #8b5cf6, #7c3aed);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dashed average line + pill */
+.avg-line {
+  border-top: 1px dashed rgba(255, 255, 255, 0.28);
+  position: relative;
+}
+.avg-pill {
+  position: absolute;
+  right: 0;
+  top: -13px;
+}
+
+/* Chart / cell tooltips */
+.chart-tip {
+  position: absolute;
+  z-index: 20;
+  pointer-events: none;
+  background: #0d0d0d;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 8px 10px;
+  font-size: 11px;
+  line-height: 1.45;
+  white-space: nowrap;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+}
+
+/* Activity heatmap */
+.hm-cell {
+  width: 100%;
+  aspect-ratio: 44 / 34;
+  border-radius: 10px;
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+.hm-cell:hover {
+  filter: brightness(1.3);
+  transform: scale(1.05);
+}
+.hm-empty {
+  background: rgba(42, 27, 77, 0.45);
+}
+
+/* Mobile snap-scroll stat rows */
+.snap-row {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+.snap-row::-webkit-scrollbar {
+  display: none;
+}
+.snap-row > * {
+  flex: 0 0 min(260px, 78vw);
+  scroll-snap-align: start;
+}
+.snap-row > .hm-cell {
+  flex: initial;
+}
+@media (min-width: 768px) {
+  .snap-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    overflow: visible;
+    padding-bottom: 0;
+  }
+  .snap-row > * {
+    flex: initial;
+  }
+}
+@media (min-width: 1280px) {
+  .snap-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Dashboard focus ring sits inside parchment-free surfaces */
+.dash-focus:focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: 2px;
 }
