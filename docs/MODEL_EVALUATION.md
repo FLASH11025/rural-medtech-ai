@@ -59,7 +59,21 @@ To prevent overconfidence on ambiguous edge cases, an uncertainty guardrail is i
 
 ---
 
-## 5. Preprocessing & Loss Synchronization
+## 5. Deployed (Free-Tier Cloud) Quantization Note
+
+On 512 MB cloud containers (`QUANTIZE_CPU=1`, set in `render.yaml`), the engine applies **int8 dynamic quantization** (`torch.ao.quantization.quantize_dynamic` over `nn.Linear`/`nn.Conv2d`) after loading the float checkpoint, halving the memory headroom that previously caused OOM restarts during inference. Validation on a held-case chest radiograph:
+
+| Mode | Prediction | Model score | Heatmap |
+| --- | --- | --- | --- |
+| Float32 (default, local) | Pneumonia | 0.6594 | yes |
+| Int8 dynamic (cloud free tier) | Pneumonia | 0.6596 | no |
+
+- **Accuracy parity:** prediction and score drift (~0.0002) are negligible.
+- **Grad-CAM unavailable in int8 mode:** quantized dynamic operators (`quantized::linear_dynamic`, `quantized::conv1d_dynamic`) do not register autograd kernels, so the backward pass cannot produce feature-map gradients. The engine's non-fatal fallback returns the prediction without the overlay; the full heatmap experience remains in local/float deployments. Quantization is deploy-only and does not affect any metrics reported in this document, which were computed with the float checkpoint.
+
+---
+
+## 6. Preprocessing & Loss Synchronization
 
 1. **CLAHE Enhancement:** Applied to 8-bit grayscale radiographs prior to channel replication (`cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))`), bringing out subtle alveolar opacities in low-dose rural mobile X-ray equipment.
 2. **Focal Loss Regularization:** Model fine-tuning utilizes multi-class focal cross-entropy ($FL(p_t) = -\alpha (1-p_t)^\gamma \log(p_t)$) with $\gamma=2.0, \alpha=0.25$ to prioritize hard negative and subtle positive cases.

@@ -20,3 +20,5 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: "3.13.9"
+      - key: QUANTIZE_CPU
+        value: "1"

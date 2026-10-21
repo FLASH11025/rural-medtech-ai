@@ -169,7 +169,7 @@ The whole platform deploys as **one** Render web service: the Python engine serv
 
 **Custom domain (optional):** buy any domain (or get a free `.me` via the GitHub Student Pack), then in the Render dashboard → your service → Settings → Add Custom Domain, and paste the CNAME record Render shows at your registrar. HTTPS is issued automatically.
 
-> **Free-tier notes:** Render's free plan sleeps after ~15 min idle — the first scan after a break takes ~1 min to wake the engine. Inference on a free CPU instance takes a few seconds per image. For a guaranteed-offline demo, run locally as described in Quick Start.
+> **Free-tier notes:** Render's free plan sleeps after ~15 min idle — the first scan after a break takes ~1 min to wake the engine. Free containers have 512 MB RAM, so the deployed engine runs an int8 dynamic-quantized model (`QUANTIZE_CPU=1`) — predictions match the float checkpoint (validated: score drift ~0.0002), but Grad-CAM heatmaps are only available in local runs because quantized operators are non-differentiable. For the full experience (heatmaps, guaranteed offline), run locally as described in Quick Start.
 
 ---
 

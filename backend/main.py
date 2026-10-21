@@ -9,6 +9,7 @@ import io
 import json
 import base64
 import logging
+import time
 from pathlib import Path
 from typing import List, Optional
 
@@ -194,8 +195,27 @@ class RuralDiagnosticEngine:
 
             state_dict = torch.load(str(self.model_path), map_location=self.device)
             model.load_state_dict(state_dict)
+            del state_dict
             model.eval()
-            self.model = model
+
+            # Constrained-memory hostings (e.g. 512MB free-tier containers) get an
+            # int8 dynamic-quantized copy: ~4x lighter weights, faster 1-core GEMM.
+            # Off by default so local evaluation always uses the float checkpoint.
+            if os.environ.get("QUANTIZE_CPU", "") == "1":
+                start = time.time()
+                torch.set_num_threads(1)
+                quantized = torch.ao.quantization.quantize_dynamic(
+                    model, {nn.Linear, nn.Conv2d}, dtype=torch.qint8
+                )
+                quantized.eval()
+                self.model = quantized
+                logger.info(
+                    "CPU int8 quantization applied in %.1fs (deployed free-tier memory mode).",
+                    time.time() - start,
+                )
+            else:
+                self.model = model
+
             self.model_loaded = True
             logger.info("Custom medical weights loaded successfully from %s", self.model_path)
         except Exception as exc:
