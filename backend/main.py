@@ -20,6 +20,8 @@ import torch.nn.functional as F
 import torchvision.models as models
 from fastapi import FastAPI, UploadFile, File, Query, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 # ============================================================================
@@ -632,6 +634,46 @@ async def analyze_xray(file: UploadFile = File(...)):
         original_base64=orig_data_url,
         model_loaded=True,
     )
+
+
+# ============================================================================
+# COMPONENT 5: SINGLE-SERVICE STATIC FRONTEND (built via STATIC_EXPORT=1)
+# When frontend/out exists, the engine process serves the UI and the API from
+# one origin, so no CSRF/proxy layer is needed.
+# ============================================================================
+FRONTEND_OUT = BASE_DIR.parent / "frontend" / "out"
+SPA_PAGES = ("dashboard", "hospitals", "doctors", "history")
+
+
+def _page_file(page: Optional[str] = None) -> Path:
+    if page:
+        for candidate in (FRONTEND_OUT / page / "index.html", FRONTEND_OUT / f"{page}.html"):
+            if candidate.is_file():
+                return candidate
+        logger.warning("Static page '%s' not found in %s, falling back to index.html.", page, FRONTEND_OUT)
+    fallback = FRONTEND_OUT / "index.html"
+    if not fallback.is_file():
+        raise HTTPException(status_code=404, detail="Frontend bundle is missing on this deployment.")
+    return fallback
+
+
+if FRONTEND_OUT.is_dir():
+    logger.info("Static frontend detected at %s — serving SPA from the engine.", FRONTEND_OUT)
+
+    @app.get("/", include_in_schema=False)
+    async def serve_home():
+        return FileResponse(_page_file())
+
+    for _page in SPA_PAGES:
+        def _make_serve(page_name: str):
+            async def _serve_page():
+                return FileResponse(_page_file(page_name))
+            return _serve_page
+
+        app.get(f"/{_page}", include_in_schema=False)(_make_serve(_page))
+
+    app.mount("/_next", StaticFiles(directory=FRONTEND_OUT / "_next"), name="next_assets")
+    app.mount("/", StaticFiles(directory=FRONTEND_OUT), name="frontend_root")
 
 
 # ============================================================================

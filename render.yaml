@@ -1,16 +1,22 @@
-# Render Blueprint — backend inference engine (free tier)
+# Render Blueprint — single-service deploy: FastAPI engine + Next.js UI on one origin.
 # Deploy: https://render.com/deploy?repo=https://github.com/FLASH11025/rural-medtech-ai
 services:
   - type: web
-    name: rural-medtech-ai-backend
+    name: rural-medtech-ai
     runtime: python
-    rootDir: backend
     plan: free
     healthCheckPath: /health
-    buildCommand: pip install --no-cache-dir -r requirements-deploy.txt
-    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT --workers 1
+    buildCommand: >
+      pip install --no-cache-dir -r backend/requirements-deploy.txt &&
+      mkdir -p "$HOME/.rma-node" &&
+      curl -fsSL https://nodejs.org/dist/v20.18.1/node-v20.18.1-linux-x64.tar.gz | tar -xz -C "$HOME/.rma-node" &&
+      export PATH="$HOME/.rma-node/node-v20.18.1-linux-x64/bin:$PATH" &&
+      node -v &&
+      cd frontend &&
+      STATIC_EXPORT=1 NEXT_PUBLIC_API_BASE= npm install &&
+      STATIC_EXPORT=1 NEXT_PUBLIC_API_BASE= npm run build &&
+      cd ..
+    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT --workers 1
     envVars:
       - key: PYTHON_VERSION
         value: "3.13.9"
-      - key: ALLOWED_ORIGINS
-        sync: false

@@ -157,29 +157,17 @@ Outputs metrics to `docs/MODEL_EVALUATION.md`.
 
 ---
 
-## Deploy (free tiers — live demo link)
+## Deploy (single service, free tier)
 
-The app is full-stack, so it deploys as two services: the **backend engine on Render** (Python/PyTorch, CPU) and the **frontend on Vercel** (Next.js).
-
-**Step 1 — Backend (Render):**
+The whole platform deploys as **one** Render web service: the Python engine serves both the AI API and the Next.js UI (exported static bundle) from a single origin.
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/FLASH11025/rural-medtech-ai)
 
-1. Click the button, sign in with GitHub, create the service (it reads `render.yaml`).
-2. First build takes ~5–10 minutes (CPU-only PyTorch wheels).
-3. Copy your service URL, e.g. `https://rural-medtech-ai-backend.onrender.com` — verify `/<url>/health` returns `engine_online`.
+1. Click the button, sign in with GitHub, confirm — `render.yaml` does the rest (installs Python deps, builds the frontend, starts `uvicorn backend.main:app`).
+2. First build takes ~5–10 minutes (CPU-only PyTorch wheels + Next build).
+3. Your service URL, e.g. `https://rural-medtech-ai.onrender.com`, serves the app at `/` and the health check at `/health`.
 
-**Step 2 — Frontend (Vercel):**
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FFLASH11025%2Frural-medtech-ai&project-name=rural-medtech-ai&root-directory=frontend&env=NEXT_PUBLIC_API_BASE)
-
-1. Click the button, sign in with GitHub, import the repo.
-2. When prompted for `NEXT_PUBLIC_API_BASE`, paste your **Render backend URL** from Step 1.
-3. Deploy → you get the live app URL, e.g. `https://rural-medtech-ai.vercel.app`.
-
-**Step 3 — Connect them (backend CORS):**
-
-In the Render dashboard → your backend service → Environment → set `ALLOWED_ORIGINS` = your Vercel URL (e.g. `https://rural-medtech-ai.vercel.app`) → Save (auto-redeploys).
+**Custom domain (optional):** buy any domain (or get a free `.me` via the GitHub Student Pack), then in the Render dashboard → your service → Settings → Add Custom Domain, and paste the CNAME record Render shows at your registrar. HTTPS is issued automatically.
 
 > **Free-tier notes:** Render's free plan sleeps after ~15 min idle — the first scan after a break takes ~1 min to wake the engine. Inference on a free CPU instance takes a few seconds per image. For a guaranteed-offline demo, run locally as described in Quick Start.
 

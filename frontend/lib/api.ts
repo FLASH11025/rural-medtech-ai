@@ -1,6 +1,8 @@
 import type { AnalysisResult, Hospital, Doctor, ModelStatus } from "./types";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "/api";
+// Default "/api" is proxied by the Next dev server; the single-service export
+// build sets NEXT_PUBLIC_API_BASE="" so calls hit the FastAPI origin directly.
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "/api";
 
 export async function analyzeXRay(imageFile: File): Promise<AnalysisResult> {
   // Client-side validation
