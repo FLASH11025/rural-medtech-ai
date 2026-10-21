@@ -183,3 +183,11 @@ Outputs metrics to `docs/MODEL_EVALUATION.md`.
 This application is a **research and development prototype**. It has not received regulatory clearance (CE, FDA, CDSCO, or equivalent) as a medical device. It must not be used for clinical decision-making without independent radiological review.
 
 **The AI result alone must never drive treatment decisions.**
+
+---
+
+## Links
+
+- **GitHub repository:** [github.com/FLASH11025/rural-medtech-ai](https://github.com/FLASH11025/rural-medtech-ai)
+- **Literature review:** [docs/literature-review.md](docs/literature-review.md)
+- **Model evaluation report:** [docs/MODEL_EVALUATION.md](docs/MODEL_EVALUATION.md)
