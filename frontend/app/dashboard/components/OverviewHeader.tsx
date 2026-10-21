@@ -23,7 +23,7 @@ function EditableClinicName() {
   return (
     <input
       value={name}
-      size={Math.max(6, name.length + 1)}
+      style={{ width: `${Math.max(8, name.length + 2)}ch` }}
       onChange={(e) => {
         const v = e.target.value;
         setName(v);

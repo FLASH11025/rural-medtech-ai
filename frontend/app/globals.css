@@ -396,6 +396,13 @@ body {
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
 }
 
+/* md:hidden must beat the unlayered display:flex above */
+@media (min-width: 768px) {
+  .bottom-nav {
+    display: none;
+  }
+}
+
 /* ============================================
    SEGMENTED CONTROL
    ============================================ */

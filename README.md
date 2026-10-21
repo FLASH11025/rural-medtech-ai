@@ -6,6 +6,18 @@ An offline-capable, AI-powered chest X-ray analysis system designed for rural an
 
 ---
 
+## Screenshots
+
+| Offline analytics dashboard | Scan — upload & analyze |
+|:---:|:---:|
+| ![Offline analytics dashboard](docs/screenshots/dashboard.png) | ![Scan page](docs/screenshots/scan.png) |
+| **Doctors directory** | **Hospitals directory** |
+| ![Doctors directory](docs/screenshots/doctors.png) | ![Hospitals directory](docs/screenshots/hospitals.png) |
+| **Analysis history** | **Dashboard (mobile)** |
+| ![Analysis history](docs/screenshots/history.png) | ![Mobile dashboard](docs/screenshots/dashboard-mobile.png) |
+
+---
+
 ## Architecture
 
 ```
