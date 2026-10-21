@@ -377,10 +377,13 @@ app = FastAPI(
     version="2.0.0",
 )
 
-# CORS: Restricted strictly to localhost Next.js frontend port 3000
+# CORS: localhost by default; extend via ALLOWED_ORIGINS env (comma-separated),
+# e.g. ALLOWED_ORIGINS=https://rural-medtech-ai.vercel.app
+_allowed_origins_env = os.environ.get("ALLOWED_ORIGINS", "")
+_origins_from_env = [o.strip() for o in _allowed_origins_env.split(",") if o.strip()]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
+    allow_origins=_origins_from_env or [
         "http://localhost:3000",
         "http://127.0.0.1:3000",
     ],

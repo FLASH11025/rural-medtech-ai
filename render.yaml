@@ -1,0 +1,16 @@
+# Render Blueprint — backend inference engine (free tier)
+# Deploy: https://render.com/deploy?repo=https://github.com/FLASH11025/rural-medtech-ai
+services:
+  - type: web
+    name: rural-medtech-ai-backend
+    runtime: python
+    rootDir: backend
+    plan: free
+    healthCheckPath: /health
+    buildCommand: pip install --no-cache-dir -r requirements-deploy.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT --workers 1
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.13.9"
+      - key: ALLOWED_ORIGINS
+        sync: false

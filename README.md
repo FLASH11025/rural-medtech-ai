@@ -157,6 +157,34 @@ Outputs metrics to `docs/MODEL_EVALUATION.md`.
 
 ---
 
+## Deploy (free tiers — live demo link)
+
+The app is full-stack, so it deploys as two services: the **backend engine on Render** (Python/PyTorch, CPU) and the **frontend on Vercel** (Next.js).
+
+**Step 1 — Backend (Render):**
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/FLASH11025/rural-medtech-ai)
+
+1. Click the button, sign in with GitHub, create the service (it reads `render.yaml`).
+2. First build takes ~5–10 minutes (CPU-only PyTorch wheels).
+3. Copy your service URL, e.g. `https://rural-medtech-ai-backend.onrender.com` — verify `/<url>/health` returns `engine_online`.
+
+**Step 2 — Frontend (Vercel):**
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FFLASH11025%2Frural-medtech-ai&project-name=rural-medtech-ai&root-directory=frontend&env=NEXT_PUBLIC_API_BASE)
+
+1. Click the button, sign in with GitHub, import the repo.
+2. When prompted for `NEXT_PUBLIC_API_BASE`, paste your **Render backend URL** from Step 1.
+3. Deploy → you get the live app URL, e.g. `https://rural-medtech-ai.vercel.app`.
+
+**Step 3 — Connect them (backend CORS):**
+
+In the Render dashboard → your backend service → Environment → set `ALLOWED_ORIGINS` = your Vercel URL (e.g. `https://rural-medtech-ai.vercel.app`) → Save (auto-redeploys).
+
+> **Free-tier notes:** Render's free plan sleeps after ~15 min idle — the first scan after a break takes ~1 min to wake the engine. Inference on a free CPU instance takes a few seconds per image. For a guaranteed-offline demo, run locally as described in Quick Start.
+
+---
+
 ## Privacy & Security
 
 - All inference is **strictly local** — no image data leaves the machine

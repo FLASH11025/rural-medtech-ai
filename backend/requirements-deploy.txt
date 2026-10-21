@@ -1,0 +1,12 @@
+# Deploy requirements (Render free tier, CPU-only Linux server)
+# Local dev continues to use requirements.txt
+--extra-index-url https://download.pytorch.org/whl/cpu
+fastapi>=0.115
+uvicorn>=0.32
+opencv-python-headless>=4.10
+pydicom>=3.0
+numpy>=2.0
+torch>=2.13
+torchvision>=0.20
+python-multipart>=0.0.12
+pillow>=11.0
