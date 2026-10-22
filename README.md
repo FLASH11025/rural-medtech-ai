@@ -204,7 +204,7 @@ This application is a **research and development prototype**. It has not receive
 
 ## Links
 
-- **Live app:** [bradford-lived-survival-requesting.trycloudflare.com](https://bradford-lived-survival-requesting.trycloudflare.com) *(runs on the developer's machine — active while the demo session is up)*
+- **Live app:** [rural-medtech-ai.onrender.com](https://rural-medtech-ai.onrender.com) *(single-service cloud deployment — engine may need ~1 min to wake from sleep on the free plan)*
 - **GitHub repository:** [github.com/FLASH11025/rural-medtech-ai](https://github.com/FLASH11025/rural-medtech-ai)
 - **Literature review:** [docs/literature-review.md](docs/literature-review.md)
 - **Model evaluation report:** [docs/MODEL_EVALUATION.md](docs/MODEL_EVALUATION.md)
